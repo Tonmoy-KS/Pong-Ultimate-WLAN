@@ -2,7 +2,7 @@
 
 A feature-rich multiplayer Pong game for web browsers, supporting local play, advanced AI, WAN multiplayer, tournaments, player profiles, lifetime stats, leaderboards, avatars, chat, achievements, and more.
 
-![Logo](.images/file_000000009e0061faa0be6c0f399832d7.png)
+![Logo](images/file_000000009e0061faa0be6c0f399832d7.png)
 
 ## Features
 
