@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong WAN Matchmaking</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Pong WAN Matchmaking</h1>
+    <div id="hud">
+        <label>Nickname: <input id="nickname" maxlength="16" value="Player"></label>
+        <label>Skin:
+            <select id="skinSelect">
+                <option value="default">Classic</option>
+                <option value="pumpkin">Halloween 🎃</option>
+                <option value="neon">Neon</option>
+                <option value="gold">Gold</option>
+            </select>
+        </label>
+        <input id="serverAddr" value="ws://localhost:8080" style="width:320px;">
+        <button id="findMatchBtn">Find Match</button>
+        <div id="hudStatus"></div>
+    </div>
+    <div id="gameArea" style="display:none;">
+        <div id="scoreboard">
+            <span id="playerNickname"></span>
+            <span id="playerScore">0</span> :
+            <span id="opponentScore">0</span>
+            <span id="opponentNickname"></span>
+        </div>
+        <canvas id="pongCanvas" width="900" height="600"></canvas>
+        <div id="chatBox">
+            <div id="chatMessages"></div>
+            <input id="chatInput" maxlength="128" placeholder="Type a message...">
+        </div>
+        <div id="overlay" class="hidden">
+            <div id="gameOverText"></div>
+            <button id="restartBtn">Restart</button>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
