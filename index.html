@@ -2,13 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ping-Pong Ultimate: WLAN</title>
+    <title>Pong Ultimate - Player Profiles Edition</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Ping-Pong Ultimate: WLAN</h1>
-    <div id="hud">
-        <label>Nickname: <input id="nickname" maxlength="16" value="Player"></label>
+    <h1>Pong Ultimate - Player Profiles Edition</h1>
+    <div id="profilePanel" class="panel">
+        <h2>Player Profile</h2>
+        <img id="avatarImg" src="avatars/default.png" alt="avatar" width="64" height="64" style="border-radius:32px;">
+        <br>
+        <input type="file" id="avatarUpload" accept="image/png,image/jpeg">
+        <br>
+        <label>Nickname: <input id="nickname" maxlength="16"></label>
+        <br>
+        <label>Avatar: 
+            <select id="avatarSelect">
+                <option value="default">Default</option>
+                <option value="cat">Cat</option>
+                <option value="dog">Dog</option>
+                <option value="alien">Alien</option>
+                <option value="robot">Robot</option>
+                <option value="custom">Custom</option>
+            </select>
+        </label>
+        <br>
         <label>Skin:
             <select id="skinSelect">
                 <option value="default">Classic</option>
@@ -23,6 +40,13 @@
                 <option value="retro">Retro</option>
             </select>
         </label>
+        <br>
+        <button id="saveProfileBtn">Save Profile</button>
+        <div id="profileStats"></div>
+    </div>
+    <div id="hud">
+        <img id="hudAvatar" src="avatars/default.png" width="32" height="32" style="border-radius:16px;vertical-align:middle;">
+        <span id="hudNickname"></span>
         <label>Event:
             <select id="eventSelect">
                 <option value="auto">Auto</option>
@@ -46,9 +70,9 @@
         <label>Assist Mode: <input type="checkbox" id="assistMode"></label>
         <button id="findMatchBtn">Find Match</button>
         <button id="aiPlayBtn">Play vs AI</button>
+        <button id="profileBtn">Profile</button>
         <button id="settingsBtn">Settings</button>
         <button id="leaderboardBtn">Leaderboard</button>
-        <button id="challengeBtn">Challenge Friend</button>
         <div id="hudStatus"></div>
     </div>
     <div id="settingsPanel" class="panel">
@@ -70,10 +94,12 @@
     </div>
     <div id="gameArea" style="display:none;">
         <div id="scoreboard">
+            <img id="playerAvatar" src="avatars/default.png" width="32" height="32" style="border-radius:16px;vertical-align:middle;">
             <span id="playerNickname"></span>
             <span id="playerScore">0</span> :
             <span id="opponentScore">0</span>
             <span id="opponentNickname"></span>
+            <img id="opponentAvatar" src="avatars/default.png" width="32" height="32" style="border-radius:16px;vertical-align:middle;">
         </div>
         <canvas id="pongCanvas" width="900" height="600"></canvas>
         <div id="chatBox">
