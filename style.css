@@ -1,0 +1,34 @@
+body { background: #19192c; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; margin: 0; }
+h1 { margin-top: 32px; margin-bottom: 12px; font-size: 2.2em; font-weight: 600; letter-spacing: 1.2px; text-shadow: 0 2px 8px #000; }
+#hud { margin-top: 40px; margin-bottom: 20px; font-size: 1.2em; }
+#hud label { margin-right: 12px; }
+#chatBox { width: 400px; margin: 8px auto 0 auto; background: #222; border-radius: 8px; padding: 8px; color: #fff; font-size: 1em; box-shadow: 0 2px 16px #141; }
+#chatMessages { height: 90px; overflow-y: auto; border-bottom: 1px solid #444; margin-bottom: 6px; font-size: 1.1em;}
+#chatInput { width: 75%; background: #111; border: none; padding: 5px; color: #fff; border-radius: 4px; }
+#chatColor { background: #111; color: #fff; border-radius: 4px; }
+.skin-default { background: #16181f; }
+.skin-neon { background: linear-gradient(135deg, #0ff 20%, #111 80%); }
+.skin-pumpkin { background: linear-gradient(135deg, #f60 40%, #111 100%); }
+.skin-gold { background: linear-gradient(135deg, #fd0 60%, #222 100%); }
+.skin-space { background: radial-gradient(circle at 300px 200px, #222 0%, #0cf 75%, #000 100%); }
+.skin-rainbow { background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); }
+.skin-fire { background: linear-gradient(135deg, #f33 30%, #fd0 80%, #222 100%); }
+.skin-ice { background: linear-gradient(135deg, #0cf 40%, #fff 90%, #111 100%); }
+.powerup-item { border-radius: 50%; position: absolute; width: 24px; height: 24px; box-shadow: 0 0 12px #fff; }
+.powerup-speed { background: #0cf; }
+.powerup-grow { background: #3f3; }
+.powerup-shrink { background: #f33; }
+.powerup-multi { background: #fc0; }
+.powerup-slow { background: #777; }
+.powerup-invis { background: #fff; border: 2px dashed #aaa; }
+.powerup-crazy { background: #ff0; border: 2px solid #f33;}
+.powerup-reverse { background: #fc0; border: 2px solid #0cf;}
+#scoreboard { font-size: 2.1em; margin: 8px 0 18px 0; font-weight: 700; letter-spacing: 1.2px;}
+#pongCanvas { background: #16181f; display: block; margin: 0 auto; border-radius: 16px; border: 3px solid #fff; box-shadow: 0 0 30px #101223, 0 0 8px #fff inset;}
+#overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20, 22, 30, 0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
+#overlay.hidden { display: none; }
+#gameOverText { color: #fff; font-size: 2.5em; margin-bottom: 28px; font-weight: 700; text-shadow: 0 1px 8px #101223; }
+#restartBtn { padding: 18px 46px; font-size: 1.3em; border: none; border-radius: 9px; background: #0078f7; color: #fff; font-weight: 600; box-shadow: 0 2px 18px #0078f7; cursor: pointer; transition: background 0.2s; }
+#restartBtn:hover { background: #005ecb; }
+#aiDiff { width: 120px; }
+#aiDiffLabel { font-weight: bold; margin-left: 8px; }
