@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Ping-Pong Ultimate: Multiplayer</title>
+    <title>Ping-Pong Ultimate: WLAN</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pong Ultimate Multiplayer</h1>
+    <h1>Ping-Pong Ultimate: WLAN</h1>
     <div id="hud">
         <label>Nickname: <input id="nickname" maxlength="16" value="Player"></label>
         <label>Skin:
@@ -19,11 +19,13 @@
                 <option value="rainbow">Rainbow 🌈</option>
                 <option value="fire">Fire 🔥</option>
                 <option value="ice">Ice ❄️</option>
+                <option value="pixel">Pixel</option>
+                <option value="retro">Retro</option>
             </select>
         </label>
         <label>Event:
             <select id="eventSelect">
-                <option value="auto">Auto (seasonal)</option>
+                <option value="auto">Auto</option>
                 <option value="classic">Classic</option>
                 <option value="halloween">Halloween</option>
                 <option value="newyear">New Year</option>
@@ -32,13 +34,39 @@
             </select>
         </label>
         <label>AI Difficulty:
-            <input id="aiDiff" type="range" min="0" max="3" value="1" style="vertical-align:middle;">
-            <span id="aiDiffLabel">Medium</span>
+            <select id="aiDiff">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+                <option value="worldclass">World-Class</option>
+                <option value="adaptive">Adaptive</option>
+                <option value="custom">Custom</option>
+            </select>
         </label>
-        <input id="serverAddr" value="ws://localhost:8080" style="width:320px;">
+        <label>Assist Mode: <input type="checkbox" id="assistMode"></label>
         <button id="findMatchBtn">Find Match</button>
         <button id="aiPlayBtn">Play vs AI</button>
+        <button id="settingsBtn">Settings</button>
+        <button id="leaderboardBtn">Leaderboard</button>
+        <button id="challengeBtn">Challenge Friend</button>
         <div id="hudStatus"></div>
+    </div>
+    <div id="settingsPanel" class="panel">
+        <h2>Settings</h2>
+        <label>Power-up Frequency:
+            <input id="powerupFreq" type="range" min="1" max="10" value="5">
+            <span id="powerupFreqLabel">Normal</span>
+        </label>
+        <label>Ball Speed:
+            <input id="ballSpeed" type="range" min="3" max="15" value="7">
+            <span id="ballSpeedLabel">7</span>
+        </label>
+        <label>Paddle Size:
+            <input id="paddleSize" type="range" min="60" max="180" value="110">
+            <span id="paddleSizeLabel">110</span>
+        </label>
+        <label>Custom Rule: <input type="checkbox" id="ruleMultiBall"> Multi-ball start</label>
+        <button id="closeSettingsBtn">Close</button>
     </div>
     <div id="gameArea" style="display:none;">
         <div id="scoreboard">
@@ -60,9 +88,12 @@
                 <option value="#fd0">Gold</option>
             </select>
         </div>
+        <div id="achievementPanel"></div>
+        <div id="leaderboardPanel"></div>
         <div id="overlay" class="hidden">
             <div id="gameOverText"></div>
             <button id="restartBtn">Restart</button>
+            <button id="saveReplayBtn">Save Replay</button>
         </div>
     </div>
     <script src="game.js"></script>
