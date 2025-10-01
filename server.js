@@ -1,7 +1,17 @@
+// Improved Pong Ultimate WAN Multiplayer & Tournament Server
+
 const WebSocket = require('ws');
-const server = new WebSocket.Server({ port: 8080 });
+const fs = require('fs');
+const path = require('path');
+const PORT = 8080;
+const DATA_FILE = path.join(__dirname, 'pong-server-data.json');
+const server = new WebSocket.Server({ port: PORT });
+
 let queue = [];
 let games = {};
+let profiles = {}; // key: id, value: {nickname, avatar, skin, stats}
+let leaderboard = [];
+let tournaments = {};
 
 const EVENT_MODES = [
   {name: "classic"},
@@ -30,6 +40,30 @@ const POWERUP_TYPES = [
   "speed", "grow", "shrink", "multi", "slow", "invis", "crazy", "reverse"
 ];
 
+// --- Persistent Data Management ---
+function loadData() {
+  if (fs.existsSync(DATA_FILE)) {
+    try {
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
+      const obj = JSON.parse(raw);
+      profiles = obj.profiles || {};
+      leaderboard = obj.leaderboard || [];
+      tournaments = obj.tournaments || {};
+    } catch (e) {
+      console.error("Failed to load persistent data:", e);
+    }
+  }
+}
+function saveData() {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify({profiles, leaderboard, tournaments}, null, 2));
+  } catch (e) {
+    console.error("Failed to save persistent data:", e);
+  }
+}
+loadData();
+
+// --- Power-up spawning ---
 function spawnPowerUp() {
   return {
     x: Math.floor(Math.random() * 700 + 100),
@@ -39,7 +73,53 @@ function spawnPowerUp() {
   };
 }
 
-function startGame(p1, p2, p1data, p2data) {
+// --- Player Profile Update ---
+function updateProfile(id, data) {
+  if (!profiles[id]) profiles[id] = {};
+  profiles[id] = { ...profiles[id], ...data };
+  saveData();
+}
+
+// --- Leaderboard Update ---
+function updateLeaderboard(profile) {
+  const idx = leaderboard.findIndex(p => p.id === profile.id);
+  if (idx !== -1) leaderboard[idx] = profile;
+  else leaderboard.push(profile);
+  leaderboard.sort((a, b) => (b.stats?.wins || 0) - (a.stats?.wins || 0));
+  leaderboard = leaderboard.slice(0, 50); // Top 50
+  saveData();
+}
+
+// --- Tournament Mode ---
+function createTournament(tid, players) {
+  tournaments[tid] = {
+    id: tid,
+    event: getEventMode(),
+    rounds: [],
+    champion: "",
+    players: players.map(p => p.id),
+    bracket: []
+  };
+  // Generate bracket (single elimination)
+  let shuffled = [...players];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  for (let i = 0; i < shuffled.length; i += 2) {
+    tournaments[tid].bracket.push({
+      p1: shuffled[i] ? shuffled[i].id : null,
+      p2: shuffled[i + 1] ? shuffled[i + 1].id : null,
+      winner: null,
+      gameId: null
+    });
+  }
+  saveData();
+  return tournaments[tid];
+}
+
+// --- Game Logic ---
+function startGame(p1, p2, p1data, p2data, tournamentId, bracketIdx) {
   const gameId = Date.now() + Math.random();
   let eventMode = getEventMode();
   let lastPowerUp = Date.now();
@@ -51,10 +131,13 @@ function startGame(p1, p2, p1data, p2data) {
     scores: [0, 0],
     powerUps: [],
     nicknames: [p1data.nickname, p2data.nickname],
+    avatars: [p1data.avatar, p2data.avatar],
     skins: [p1data.skin, p2data.skin],
     chat: [],
     eventMode,
-    effects: []
+    effects: [],
+    tournamentId: tournamentId || null,
+    bracketIdx: bracketIdx != null ? bracketIdx : null
   };
   games[gameId] = { players: [p1, p2], state };
   p1.gameId = gameId;
@@ -63,7 +146,16 @@ function startGame(p1, p2, p1data, p2data) {
   p2.playerIdx = 1;
 
   [p1, p2].forEach((ws, i) => {
-    ws.send(JSON.stringify({ type: "match", playerIdx: i, nicknames: state.nicknames, skins: state.skins, eventMode }));
+    ws.send(JSON.stringify({
+      type: "match",
+      playerIdx: i,
+      nicknames: state.nicknames,
+      avatars: state.avatars,
+      skins: state.skins,
+      eventMode,
+      tournamentId: state.tournamentId,
+      bracketIdx: state.bracketIdx
+    }));
   });
 
   games[gameId].interval = setInterval(() => {
@@ -117,8 +209,14 @@ function startGame(p1, p2, p1data, p2data) {
         ball.vy += (Math.random()-0.5)*2;
       }
       // Score
-      if (ball.x + 18 < 0) { state.scores[1]++; ball.x = 450; ball.y = 300; ball.vx = 7; ball.vy = 4; }
-      if (ball.x > 900) { state.scores[0]++; ball.x = 450; ball.y = 300; ball.vx = -7; ball.vy = 4; }
+      if (ball.x + 18 < 0) {
+        state.scores[1]++;
+        ball.x = 450; ball.y = 300; ball.vx = 7; ball.vy = 4;
+      }
+      if (ball.x > 900) {
+        state.scores[0]++;
+        ball.x = 450; ball.y = 300; ball.vx = -7; ball.vy = 4;
+      }
     }
     updateBall(state.ball);
     state.balls.forEach(updateBall);
@@ -126,25 +224,79 @@ function startGame(p1, p2, p1data, p2data) {
     // Balls cleanup
     state.balls = state.balls.filter(b => b.x > 0 && b.x < 900);
 
+    // Check for win
+    let winScore = 10;
+    let winnerIdx = null;
+    if (state.scores[0] >= winScore) winnerIdx = 0;
+    if (state.scores[1] >= winScore) winnerIdx = 1;
+    if (winnerIdx != null) {
+      // Update stats & leaderboard
+      [p1, p2].forEach((ws, i) => {
+        if (profiles[ws.id]) {
+          profiles[ws.id].stats = profiles[ws.id].stats || {games:0, wins:0, losses:0};
+          profiles[ws.id].stats.games++;
+          if (i === winnerIdx) {
+            profiles[ws.id].stats.wins++;
+          } else {
+            profiles[ws.id].stats.losses++;
+          }
+          updateLeaderboard({
+            id: ws.id,
+            nickname: profiles[ws.id].nickname,
+            avatar: profiles[ws.id].avatar,
+            skin: profiles[ws.id].skin,
+            stats: profiles[ws.id].stats
+          });
+        }
+      });
+      saveData();
+
+      // If tournament match, update bracket
+      if (state.tournamentId && state.bracketIdx != null && tournaments[state.tournamentId]) {
+        let bracketMatch = tournaments[state.tournamentId].bracket[state.bracketIdx];
+        bracketMatch.winner = [p1, p2][winnerIdx].id;
+        bracketMatch.gameId = gameId;
+        // Check tournament champion
+        let winners = tournaments[state.tournamentId].bracket.map(m => m.winner).filter(Boolean);
+        if (winners.length === tournaments[state.tournamentId].bracket.length) {
+          tournaments[state.tournamentId].champion = winners[0]; // For single round
+          saveData();
+        }
+      }
+
+      // Notify and cleanup
+      [p1, p2].forEach(ws => {
+        ws.send(JSON.stringify({type: 'gameover', winnerIdx, scores: state.scores}));
+        ws.close();
+      });
+      clearInterval(games[gameId].interval);
+      delete games[gameId];
+    }
+
     // Relay state
-    for (const ws of games[gameId].players) {
+    for (const ws of games[gameId]?.players || []) {
       ws.send(JSON.stringify({ type: "game_state", state }));
     }
     state.effects = [];
   }, 1000 / 60);
 }
 
+// --- Connection Handling ---
 server.on('connection', ws => {
+  ws.id = `user${Math.floor(Math.random()*100000000)}-${Date.now()}`;
   ws.on('message', msg => {
     const data = JSON.parse(msg);
     if (data.type === "find_match") {
       ws.nickname = data.nickname || "Player";
+      ws.avatar = data.avatar || "default";
       ws.skin = data.skin || "default";
-      ws.clientData = { nickname: ws.nickname, skin: ws.skin };
+      ws.clientData = { id: ws.id, nickname: ws.nickname, avatar: ws.avatar, skin: ws.skin };
+      updateProfile(ws.id, ws.clientData);
       queue.push(ws);
       ws.send(JSON.stringify({ type: "waiting" }));
       if (queue.length >= 2) {
-        startGame(queue.shift(), queue.shift(), queue[0].clientData, queue[1].clientData);
+        const ws1 = queue.shift(), ws2 = queue.shift();
+        startGame(ws1, ws2, ws1.clientData, ws2.clientData);
       }
     } else if (data.type === "paddle" && ws.gameId) {
       let g = games[ws.gameId];
@@ -158,6 +310,36 @@ server.on('connection', ws => {
         for (const p of g.players) {
           p.send(JSON.stringify({ type: "chat", sender: ws.playerIdx, text: msgtext, color }));
         }
+      }
+    }
+    // Profile update
+    else if (data.type === "profile") {
+      updateProfile(ws.id, data.profile);
+      ws.send(JSON.stringify({ type: "profile_saved", profile: profiles[ws.id] }));
+    }
+    // Leaderboard request
+    else if (data.type === "get_leaderboard") {
+      ws.send(JSON.stringify({ type: "leaderboard", leaderboard }));
+    }
+    // Tournament creation
+    else if (data.type === "create_tournament") {
+      const tid = `t${Date.now()}-${Math.floor(Math.random()*1000000)}`;
+      const players = (data.players || []).map(pid => profiles[pid]).filter(Boolean);
+      const tournament = createTournament(tid, players);
+      ws.send(JSON.stringify({ type: "tournament_created", tournament }));
+    }
+    // Tournament bracket request
+    else if (data.type === "get_tournament") {
+      let t = tournaments[data.tid];
+      ws.send(JSON.stringify({ type: "tournament", tournament: t }));
+    }
+    // Tournament match start
+    else if (data.type === "start_tournament_match") {
+      let t = tournaments[data.tid];
+      if (t && t.bracket[data.idx]) {
+        let m = t.bracket[data.idx];
+        const ws1 = server.clients.find(cl => cl.id === m.p1), ws2 = server.clients.find(cl => cl.id === m.p2);
+        if (ws1 && ws2) startGame(ws1, ws2, profiles[ws1.id], profiles[ws2.id], data.tid, data.idx);
       }
     }
   });
@@ -174,4 +356,5 @@ server.on('connection', ws => {
     }
   });
 });
-console.log("WAN matchmaking server running on ws://localhost:8080");
+
+console.log(`Pong Ultimate WAN server running on ws://localhost:${PORT}`);
