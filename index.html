@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pong WAN Matchmaking</title>
+    <title>Pong Ultimate Multiplayer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pong WAN Matchmaking</h1>
+    <h1>Pong Ultimate Multiplayer</h1>
     <div id="hud">
         <label>Nickname: <input id="nickname" maxlength="16" value="Player"></label>
         <label>Skin:
@@ -15,10 +15,29 @@
                 <option value="pumpkin">Halloween 🎃</option>
                 <option value="neon">Neon</option>
                 <option value="gold">Gold</option>
+                <option value="space">Space 🪐</option>
+                <option value="rainbow">Rainbow 🌈</option>
+                <option value="fire">Fire 🔥</option>
+                <option value="ice">Ice ❄️</option>
             </select>
+        </label>
+        <label>Event:
+            <select id="eventSelect">
+                <option value="auto">Auto (seasonal)</option>
+                <option value="classic">Classic</option>
+                <option value="halloween">Halloween</option>
+                <option value="newyear">New Year</option>
+                <option value="space">Space</option>
+                <option value="rainbow">Rainbow</option>
+            </select>
+        </label>
+        <label>AI Difficulty:
+            <input id="aiDiff" type="range" min="0" max="3" value="1" style="vertical-align:middle;">
+            <span id="aiDiffLabel">Medium</span>
         </label>
         <input id="serverAddr" value="ws://localhost:8080" style="width:320px;">
         <button id="findMatchBtn">Find Match</button>
+        <button id="aiPlayBtn">Play vs AI</button>
         <div id="hudStatus"></div>
     </div>
     <div id="gameArea" style="display:none;">
@@ -32,6 +51,14 @@
         <div id="chatBox">
             <div id="chatMessages"></div>
             <input id="chatInput" maxlength="128" placeholder="Type a message...">
+            <select id="chatColor">
+                <option value="#fff">White</option>
+                <option value="#0cf">Blue</option>
+                <option value="#fc0">Yellow</option>
+                <option value="#f33">Red</option>
+                <option value="#3f3">Green</option>
+                <option value="#fd0">Gold</option>
+            </select>
         </div>
         <div id="overlay" class="hidden">
             <div id="gameOverText"></div>
