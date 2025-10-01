@@ -1,8 +1,12 @@
 body { background: #19192c; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; margin: 0; }
 h1 { margin-top: 32px; margin-bottom: 12px; font-size: 2.2em; font-weight: 600; letter-spacing: 1.2px; text-shadow: 0 2px 8px #000; }
-#hud { margin-top: 40px; margin-bottom: 20px; font-size: 1.2em; }
-#hud label { margin-right: 12px; }
 .panel { display:none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; border-radius: 16px; padding: 24px; z-index: 20; box-shadow: 0 4px 32px #0008; }
+#profilePanel img, #scoreboard img, #hudAvatar { border: 2px solid #444; }
+#profilePanel label, #profilePanel input, #profilePanel select { margin: 4px; }
+#profileStats { margin-top: 12px; font-size: 1.1em; }
+#hud { margin-top: 40px; margin-bottom: 20px; font-size: 1.2em; }
+#hudAvatar { margin-right: 7px; }
+#hud label { margin-right: 12px; }
 #chatBox { width: 400px; margin: 8px auto 0 auto; background: #222; border-radius: 8px; padding: 8px; color: #fff; font-size: 1em; box-shadow: 0 2px 16px #141; }
 #chatMessages { height: 90px; overflow-y: auto; border-bottom: 1px solid #444; margin-bottom: 6px; font-size: 1.1em;}
 #chatInput { width: 75%; background: #111; border: none; padding: 5px; color: #fff; border-radius: 4px; }
