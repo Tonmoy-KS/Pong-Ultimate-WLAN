@@ -49,10 +49,16 @@ To play WAN multiplayer, ensure this port is accessible to other devices (port f
 
 Open `index.html` in your browser (Chrome recommended).
 
-### 5. Avatars
+### 5. Avatar
 
 Add your avatar images to the `avatars` folder. Default avatars are included.
 
+#### How to add custom avatar
+* 1. Choose your PGN profile picture.
+  2. Use any file manager that are in your device. (for example: ZArchiver)
+  3. Rename your picture to `Custom.pgn`
+  4. upload that PGN to the `avatar` assets folder.
+ 
 ## How to Play
 
 - **Local/Offline:** Click **"Play vs AI"** and choose your AI difficulty.
