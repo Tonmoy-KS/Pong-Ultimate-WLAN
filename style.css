@@ -1,16 +1,199 @@
-body { background: #19192c; color: #fff; font-family: 'Segoe UI', Arial, sans-serif; text-align: center; margin: 0; }
-h1 { margin-top: 32px; margin-bottom: 12px; font-size: 2.2em; font-weight: 600; letter-spacing: 1.2px; text-shadow: 0 2px 8px #000; }
-.panel { display:none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; border-radius: 16px; padding: 24px; z-index: 20; box-shadow: 0 4px 32px #0008; }
-#profilePanel img, #scoreboard img, #hudAvatar { border: 2px solid #444; }
-#profilePanel label, #profilePanel input, #profilePanel select { margin: 4px; }
-#profileStats { margin-top: 12px; font-size: 1.1em; }
-#hud { margin-top: 40px; margin-bottom: 20px; font-size: 1.2em; }
-#hudAvatar { margin-right: 7px; }
-#hud label { margin-right: 12px; }
-#chatBox { width: 400px; margin: 8px auto 0 auto; background: #222; border-radius: 8px; padding: 8px; color: #fff; font-size: 1em; box-shadow: 0 2px 16px #141; }
-#chatMessages { height: 90px; overflow-y: auto; border-bottom: 1px solid #444; margin-bottom: 6px; font-size: 1.1em;}
-#chatInput { width: 75%; background: #111; border: none; padding: 5px; color: #fff; border-radius: 4px; }
-#chatColor { background: #111; color: #fff; border-radius: 4px; }
+/* === GENERAL === */
+body {
+    background: linear-gradient(135deg, #1a1d2a 0%, #21243d 100%);
+    color: #fff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    min-height: 100vh;
+}
+h1 {
+    margin-top: 32px;
+    margin-bottom: 12px;
+    font-size: 2.4em;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    text-shadow: 0 2px 12px #000, 0 0 6px #0099ff80;
+}
+
+/* === PANELS === */
+.panel {
+    display: none;
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222b;
+    color: #fff;
+    border-radius: 20px;
+    padding: 28px 36px;
+    z-index: 50;
+    box-shadow: 0 4px 32px #000a, 0 0 12px #0099ff50;
+    min-width: 340px;
+    max-width: 98vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    text-align: left;
+}
+.panel h2 {
+    margin-top: 0;
+    font-size: 1.28em;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px #0099ff50;
+}
+
+button, select, input[type="range"], input[type="file"] {
+    font-size: 1em;
+    margin: 7px 5px;
+    border-radius: 7px;
+    border: 1px solid #444;
+    background: #23243a;
+    color: #fff;
+    padding: 6px 12px;
+    transition: background 0.2s;
+}
+
+button:hover, select:hover, input[type="range"]:hover, input[type="file"]:hover {
+    background: #0078f7;
+}
+
+input[type="range"] {
+    width: 120px;
+    background: none;
+    accent-color: #0099ff;
+}
+
+input[type="file"] {
+    padding: 4px 0;
+    background: none;
+    border: none;
+}
+
+label {
+    display: inline-block;
+    margin: 6px 0 6px 8px;
+    font-size: 1.08em;
+}
+
+/* === PROFILE === */
+#profilePanel img, #scoreboard img, #hudAvatar {
+    border: 2px solid #444;
+    background: #fff2;
+    box-shadow: 0 1px 8px #0099ff50;
+}
+#profilePanel label, #profilePanel input, #profilePanel select {
+    margin: 4px;
+}
+#profileStats {
+    margin-top: 14px;
+    font-size: 1.1em;
+    background: #272b36;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 1px 8px #0099ff30;
+}
+
+/* === HUD === */
+#hud {
+    margin-top: 36px;
+    margin-bottom: 20px;
+    font-size: 1.16em;
+    padding: 6px 0;
+    background: #23243a99;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px #0099ff18;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+#hudAvatar {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+#hudNickname {
+    font-weight: 600;
+    color: #fd0;
+    margin-right: 12px;
+}
+#hud label {
+    margin-right: 10px;
+}
+
+/* === SCOREBOARD === */
+#scoreboard {
+    font-size: 2.1em;
+    margin: 18px 0 18px 0;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #23243a99;
+    border-radius: 14px;
+    padding: 8px 0;
+    box-shadow: 0 1px 12px #0099ff18;
+}
+#scoreboard img {
+    margin: 0 8px;
+    vertical-align: middle;
+}
+#playerScore, #opponentScore {
+    color: #0cf;
+    text-shadow: 0 1px 8px #0099ff80;
+}
+
+/* === CANVAS === */
+#pongCanvas {
+    background: #16181f;
+    display: block;
+    margin: 0 auto;
+    border-radius: 18px;
+    border: 3px solid #fff;
+    box-shadow: 0 0 30px #101223, 0 0 8px #fff inset;
+    max-width: 98vw;
+    max-height: 70vh;
+}
+
+/* === CHAT === */
+#chatBox {
+    width: 400px;
+    margin: 10px auto 0 auto;
+    background: #222;
+    border-radius: 9px;
+    padding: 10px;
+    color: #fff;
+    font-size: 1em;
+    box-shadow: 0 2px 16px #141;
+}
+#chatMessages {
+    height: 90px;
+    overflow-y: auto;
+    border-bottom: 1px solid #444;
+    margin-bottom: 6px;
+    font-size: 1.1em;
+    text-align: left;
+}
+#chatInput {
+    width: 70%;
+    background: #111;
+    border: none;
+    padding: 5px 8px;
+    color: #fff;
+    border-radius: 4px;
+    margin-right: 7px;
+}
+#chatColor {
+    background: #111;
+    color: #fff;
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin-left: 8px;
+}
+
+/* === SKINS & THEMES === */
 .skin-default { background: #16181f; }
 .skin-neon { background: linear-gradient(135deg, #0ff 20%, #111 80%); }
 .skin-pumpkin { background: linear-gradient(135deg, #f60 40%, #111 100%); }
@@ -21,16 +204,128 @@ h1 { margin-top: 32px; margin-bottom: 12px; font-size: 2.2em; font-weight: 600; 
 .skin-ice { background: linear-gradient(135deg, #0cf 40%, #fff 90%, #111 100%); }
 .skin-pixel { background: repeating-linear-gradient(90deg, #fff 0 2px, #222 2px 4px); }
 .skin-retro { background: #222 url('data:image/svg+xml;utf8,<svg width="4" height="4" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="2" fill="lime"/><rect x="2" y="2" width="2" height="2" fill="aqua"/></svg>') repeat; }
-#scoreboard { font-size: 2.1em; margin: 8px 0 18px 0; font-weight: 700; letter-spacing: 1.2px;}
-#pongCanvas { background: #16181f; display: block; margin: 0 auto; border-radius: 16px; border: 3px solid #fff; box-shadow: 0 0 30px #101223, 0 0 8px #fff inset;}
-#achievementPanel { position: fixed; top: 10px; right: 10px; background: #0cf; color: #fff; border-radius: 8px; padding: 12px; display:none; }
-.achievement { margin: 6px; padding: 5px 10px; background: #0cf; color: #fff; border-radius: 7px; display:inline-block; }
-#leaderboardPanel { display:none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; border-radius: 16px; padding: 20px; z-index: 21; box-shadow: 0 4px 32px #0008; }
-.leaderboard-entry { margin: 6px 0; font-weight: bold; }
-#overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20, 22, 30, 0.8); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; }
-#overlay.hidden { display: none; }
-#gameOverText { color: #fff; font-size: 2.5em; margin-bottom: 28px; font-weight: 700; text-shadow: 0 1px 8px #101223; }
-#restartBtn, #saveReplayBtn { padding: 14px 34px; font-size: 1.1em; border: none; border-radius: 9px; background: #0078f7; color: #fff; font-weight: 600; box-shadow: 0 2px 18px #0078f7; cursor: pointer; transition: background 0.2s; margin: 6px;}
-#restartBtn:hover, #saveReplayBtn:hover { background: #005ecb; }
-.trail-particle { position: absolute; border-radius: 50%; pointer-events: none; }
-@media (max-width: 600px) { #pongCanvas { width: 99vw !important; height: 55vw !important; } }
+
+/* === ACHIEVEMENTS === */
+#achievementPanel {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(90deg, #0cf 70%, #fd0 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px 20px;
+    display: none;
+    box-shadow: 0 2px 18px #0099ff80;
+    font-size: 1.1em;
+    min-width: 140px;
+    z-index: 100;
+}
+.achievement {
+    margin: 8px 0;
+    padding: 7px 15px;
+    background: #0cf;
+    color: #fff;
+    border-radius: 7px;
+    display: inline-block;
+    box-shadow: 0 1px 8px #0099ff20;
+}
+
+/* === LEADERBOARD & TOURNAMENT === */
+#leaderboardPanel, #tournamentPanel {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.leaderboard-entry {
+    margin: 8px 0;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #171c25;
+    border-radius: 7px;
+    padding: 8px 14px;
+    box-shadow: 0 1px 8px #0099ff30;
+}
+.leaderboard-entry img {
+    border-radius:50%;
+    margin-right:8px;
+    background: #fff;
+    box-shadow: 0 1px 8px #0099ff20;
+}
+.tournament-bracket {
+    margin-top: 14px;
+}
+.tournament-match {
+    margin: 4px 0;
+    padding: 5px 10px;
+    background: #222;
+    border-radius: 8px;
+    font-size: 1.06em;
+    box-shadow: 0 1px 8px #0099ff20;
+}
+
+/* === OVERLAY === */
+#overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(20, 22, 30, 0.88);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 110;
+}
+#overlay.hidden {
+    display: none;
+}
+#gameOverText {
+    color: #fff;
+    font-size: 2.5em;
+    margin-bottom: 28px;
+    font-weight: 700;
+    text-shadow: 0 1px 8px #101223, 0 0 18px #fd0;
+}
+#restartBtn, #saveReplayBtn {
+    padding: 14px 34px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 9px;
+    background: #0078f7;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 2px 18px #0078f7;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 6px;
+}
+#restartBtn:hover, #saveReplayBtn:hover {
+    background: #005ecb;
+}
+
+/* === PARTICLES & TRAILS === */
+.trail-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 12px #fd0;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+    #pongCanvas { width: 99vw !important; height: 55vw !important; }
+    #chatBox { width: 95vw; }
+    .panel { min-width: 90vw; padding: 18px 6vw; }
+    #scoreboard { font-size: 1.44em; padding: 4px 0; flex-wrap: wrap;}
+}
+
+::-webkit-scrollbar {
+    width: 9px;
+    background: #222;
+}
+::-webkit-scrollbar-thumb {
+    background: #2e466c;
+    border-radius: 7px;
+}
