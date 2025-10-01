@@ -70,6 +70,7 @@ let leaderboard = [];
 let stats = {
     games: 0, wins: 0, losses: 0, winrate: 0, powerups: 0, goals: 0, saves: 0, tournaments: 0, longestWinStreak: 0, currentWinStreak: 0
 };
+
 function updateProfilePanel() {
     avatarImg.src = avatars[0] === "custom" && localStorage.getItem('customAvatar')
         ? localStorage.getItem('customAvatar')
@@ -77,7 +78,16 @@ function updateProfilePanel() {
     nicknameInput.value = nicknames[0];
     avatarSelect.value = avatars[0];
     skinSelect.value = skins[0];
-    profileStats.innerHTML = `<b>Lifetime Stats</b><br>Games: ${stats.games}<br>Wins: ${stats.wins}<br>Losses: ${stats.losses}<br>Win Rate: ${(stats.winrate*100).toFixed(1)}%<br>Power-Ups Used: ${stats.powerups}<br>Goals: ${stats.goals}<br>Saves: ${stats.saves}<br>Tournaments: ${stats.tournaments}<br>Longest Win Streak: ${stats.longestWinStreak}`;
+    profileStats.innerHTML = `<b>Lifetime Stats</b><br>
+        Games: ${stats.games}<br>
+        Wins: ${stats.wins}<br>
+        Losses: ${stats.losses}<br>
+        Win Rate: ${(stats.winrate*100).toFixed(1)}%<br>
+        Power-Ups Used: ${stats.powerups}<br>
+        Goals: ${stats.goals}<br>
+        Saves: ${stats.saves}<br>
+        Tournaments: ${stats.tournaments}<br>
+        Longest Win Streak: ${stats.longestWinStreak}`;
     hudAvatar.src = avatarImg.src;
     hudNickname.textContent = nicknames[0];
 }
@@ -232,7 +242,34 @@ function drawEverything() {
     drawTrails();
     drawBall(ball);
     balls.forEach(drawBall);
-    // ...power-ups, scoreboard, etc...
+    // Power-ups
+    for (let pu of powerUps) {
+        ctx.save();
+        ctx.fillStyle = "#fd0";
+        ctx.beginPath();
+        ctx.arc(pu.x, pu.y, 12, 0, 2 * Math.PI);
+        ctx.globalAlpha = 0.85;
+        ctx.fill();
+        ctx.font = "10px monospace";
+        ctx.fillStyle = "#fff";
+        ctx.fillText(pu.type, pu.x - 16, pu.y + 22);
+        ctx.restore();
+    }
+    // Net
+    ctx.save();
+    ctx.strokeStyle = "#fff";
+    ctx.setLineDash([10, 18]);
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.stroke();
+    ctx.restore();
+    // Paddles
+    ctx.save();
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(36, paddleY, 16, paddleSizeElem.value);
+    ctx.fillRect(canvas.width - 36 - 16, opponentY, 16, paddleSizeElem.value);
+    ctx.restore();
 }
 function gameLoop() {
     drawEverything();
@@ -257,7 +294,7 @@ aiPlayBtn.onclick = () => {
     opponentAvatar.src = AVATAR_PATHS[avatars[1]] || AVATAR_PATHS.default;
     playerNicknameElem.textContent = nicknames[0];
     opponentNicknameElem.textContent = nicknames[1];
-    // ...applySkin, show game area, etc...
+    canvas.className = "skin-" + skins[0];
     hud.style.display = "none";
     gameArea.style.display = "block";
     achievements = [];
