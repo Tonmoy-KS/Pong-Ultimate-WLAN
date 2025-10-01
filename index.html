@@ -7,6 +7,7 @@
 </head>
 <body>
     <h1>Pong Ultimate: WLAN</h1>
+    <!-- Profile Panel -->
     <div id="profilePanel" class="panel">
         <h2>Player Profile</h2>
         <img id="avatarImg" src="avatars/default.png" alt="avatar" width="64" height="64" style="border-radius:32px;">
@@ -45,6 +46,7 @@
         <div id="profileStats"></div>
         <button onclick="profilePanel.style.display='none'">Close</button>
     </div>
+    <!-- HUD -->
     <div id="hud">
         <img id="hudAvatar" src="avatars/default.png" width="32" height="32" style="border-radius:16px;vertical-align:middle;">
         <span id="hudNickname"></span>
@@ -73,8 +75,10 @@
         <button id="profileBtn">Profile</button>
         <button id="settingsBtn">Settings</button>
         <button id="leaderboardBtn">Leaderboard</button>
+        <button id="tournamentBtn">Tournament</button>
         <div id="hudStatus"></div>
     </div>
+    <!-- Settings Panel -->
     <div id="settingsPanel" class="panel">
         <h2>Settings</h2>
         <label>Power-up Frequency:
@@ -92,6 +96,7 @@
         <label>Custom Rule: <input type="checkbox" id="ruleMultiBall"> Multi-ball start</label>
         <button id="closeSettingsBtn">Close</button>
     </div>
+    <!-- Game Area -->
     <div id="gameArea" style="display:none;">
         <div id="scoreboard">
             <img id="playerAvatar" src="avatars/default.png" width="32" height="32" style="border-radius:16px;vertical-align:middle;">
@@ -116,6 +121,7 @@
         </div>
         <div id="achievementPanel"></div>
         <div id="leaderboardPanel"></div>
+        <div id="tournamentPanel"></div>
         <div id="overlay" class="hidden">
             <div id="gameOverText"></div>
             <button id="restartBtn">Restart</button>
