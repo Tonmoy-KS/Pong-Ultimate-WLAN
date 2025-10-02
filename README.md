@@ -72,10 +72,11 @@ Add your avatar images to the `avatars` folder. Default avatars are included.
 
 ```
 ./
-├── index.html
-├── style.css
-├── game.js
-├── server.js
+├── src/
+│   ├── index.html
+│   ├── style.css
+│   ├── game.js
+│   └── server.js
 ├── avatars/
 │   ├── default.png
 │   ├── cat.png
